@@ -5,10 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>后台登录</title>
+    <title>后台登录页面</title>
     <link rel="stylesheet" href="./css/reset.css">
     <link rel="stylesheet" href="./css/iconfont.css">
     <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css">
 </head>
 
 <body>
@@ -29,56 +30,79 @@
                 <input type="button" class="input_sub" value="登 录">
             </form>
         </div>
+    </div>
 
+
+    <!-- 进行提示使用的模态框 -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="tip">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">提示信息</h4>
+                </div>
+                <!-- 模态框的内容区域 -->
+                <div class="modal-body">
+                    <p>One fine body&hellip;</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                </div>
+            </div>
+        </div>
     </div>
 
 
     <script src="./js/jquery-1.12.4.min.js"></script>
-
     <!-- 引入配置文件 -->
     <script src="./tool/config.js"></script>
-    <script src="./js/login.js"></script>
+    <script src="./tool/user.js"></script>
 
-    <!-- <script>
+    <!-- 为使用模态版引入的文件 -->
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
+
+    <script>
         // 1 给登录按钮设置点击事件
         $('.input_sub').on('click', function () {
             // 2 获取用户名和密码并进行检测
             var user_name = $('.input_txt').val();
             var password = $('.input_pass').val();
             // trim是字符串方法，可以去除两端空格
-            if(user_name.trim() == '' || password.trim() == ''){
-                alert('请填写完整表单');
+            if (user_name.trim() === '' || password.trim() === '') {
+                // alert('请填写完整表单');
+                // 通过boot的模态框替换效果
+                $('#tip').modal('show').find('.modal-body')
+                    .text('请填写完整信息');
                 return;
             }
 
-            //3 发送请求
-            $.ajax({
-                url : USER_LOGIN,
-                type : 'post',
-                data : {
-                    user_name : user_name,
-                    password : password
+            // 3 发送请求
+            user.login({
+                // 用户登录时需要的信息
+                data: {
+                    user_name: user_name,
+                    password: password
                 },
-                success : function(res){
+                // 用户登录检测后的处理方式(回调函数)
+                callback : function(res){
                     // 4 根据服务端响应的状态进行对应操作
                     if(res.code === 200){
                         location.href = './index.html';
                     }else {
-                        alert('用户名或密码错误');
+                        // 通过模态框进行提示
+                        $('#tip').modal('show').find('.modal-body')
+                        .text('用户名或密码错误');
                     }
                 }
-            });
-        });
+            })
+
+        })
 
 
+    </script>
 
-
-
-
-
-
-
-    </script> -->
 </body>
 
 </html>
