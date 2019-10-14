@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>后台首页</title>
-    <link rel="stylesheet" href="./js/bootstrap/js/bootstrap.min.js">
+    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/reset.css">
     <link rel="stylesheet" href="./css/iconfont.css">
     <link rel="stylesheet" href="./css/main.css">
@@ -78,7 +78,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary">确认退出</button>
+                    <button type="button" class="btn btn-primary yes">确认退出</button>
                 </div>
             </div>
         </div>
@@ -142,9 +142,45 @@
     <script src="./tool/user.js"></script>
 
     <script>
-    
-    
-    
+    //退出功能
+    // 1 给退出按钮设置点击事件
+    $('#logout').on('click',function(){
+        // 1.1 设置模态框显示
+        $('#myModal').modal('show');
+    })
+    // 2 确认退出按钮的点击事件
+    $('.yes').on('click',function(){
+        // 2.1 发送请求，进行退出操作
+        user.logout({
+            callback : function(res){
+                if(res.code === 200){
+                    // console.log(res)
+                    // 2.2 退出完成，跳转到login.html即可
+                    location.href = './login.html';
+                }
+            }
+        });
+    });
+
+
+    // 用户简单信息获取功能
+    // 1 页面加载中直接发送请求，获取用户信息
+    user.getInfo({
+        callback : function(res){
+            if(res.code === 200){
+               console.log(res)
+                // 2 将获取的数据渲染到页面中
+                var data = res.data;
+                // 左侧的用户信息
+                $('.user_info img').prop('src',data.user_pic)
+                .next().text(data.nickname);
+                // 右侧顶部的用户头像
+                $('.user_center_link img').prop('src',data.user_pic);
+            }
+        }
+    });
+
+      
     </script>
 </body>
 
