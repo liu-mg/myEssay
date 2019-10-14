@@ -47,11 +47,13 @@ var user = {
     $.ajax({
       type: 'post',
       url: USER_INFO_EDIT,
+      data : options.data,
       contentType: false,
       processData: false,
       success: options.callback
     })
 
   },
+ 
 
 };
