@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>文章列表管理</title>
+    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/iconfont.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <script src="./js/jquery-1.12.4.min.js"></script>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="common_title">
+            文章列表
+        </div>
+        <div class="container-fluid common_con">
+            <div class="row opt_btns">
+                <div class="col-xs-6">
+                    <form class="form-inline">
+                        <!-- 分类筛选的下拉菜单 -->
+                        <select id="selCategory" name="" class="form-control input-sm">
+                            <!-- 
+                    '所有分类'这个选项不能进行动态创建，因为不是一个真正的分类
+                      - 下拉菜单的选项的value需要设置为分类的id
+                      - 所有分类选项没有id，设置为''
+    
+                      - 下拉菜单选项如果没设置，提交的是option标签中的内容
+                        - 如果设置了value，一定提交的是value的内容
+                  -->
+                            <option value="">所有分类</option>
+                            <!--               
+                  <option>未分类</option>
+                  <option>奇趣事</option>
+                  <option>会生活</option>
+                  <option>爱旅行</option> 
+                  -->
+                        </select>
+                        <!-- 状态筛选的下拉菜单 -->
+                        <select id="selStatus" name="" class="form-control input-sm">
+                            <!-- 状态和分类不同，分类可能被用户各种操作
+                      但是状态通常是固定的几种情况
+                      需要将value设置为中文状态
+                  -->
+                            <option value="">所有状态</option>
+                            <option value="草稿">草稿</option>
+                            <option value="已发布">已发布</option>
+                        </select>
+                        <button id="btnSearch" class="btn btn-default btn-sm">筛选</button>
+                    </form>
+                </div>
+                <div class="col-xs-6">
+                    <a href="article_release.html" class="btn btn-success btn-sm pull-right" id="release_btn">发表文章</a>
+                </div>
+            </div>
+
+            <table class="table table-striped table-bordered table-hover mp20">
+                <thead>
+                    <tr>
+                        <th>标题</th>
+                        <th>作者</th>
+                        <th>分类</th>
+                        <th class="text-center">发表时间</th>
+                        <th class="text-center">状态</th>
+                        <th class="text-center" width="100">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+
+
+                    <!-- <tr>
+    
+                <td>王积千造统最头</td>
+                <td>杰克</td>
+                <td>奇趣事</td>
+                <td class="text-center">2017-06-08 07:08:46</td>
+    
+    
+                <td class="text-center">已发布</td>
+    
+    
+                <td class="text-center">
+                  <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
+                  <a href="javascript:deleteTr( 1005 );" class="btn btn-danger btn-xs">删除</a>
+                </td>
+              </tr>-->
+
+                </tbody>
+            </table>
+
+            <div class="row text-center">
+                <ul class="pagination pagination-sm">
+                    <li class="page-item first disabled"><a href="#" class="page-link">首页</a></li>
+                    <li class="page-item prev disabled"><a href="#" class="page-link">上一页</a></li>
+                    <li class="page-item active"><a href="#" class="page-link">1</a></li>
+                    <li class="page-item"><a href="#" class="page-link">2</a></li>
+                    <li class="page-item"><a href="#" class="page-link">3</a></li>
+                    <li class="page-item"><a href="#" class="page-link">4</a></li>
+                    <li class="page-item"><a href="#" class="page-link">5</a></li>
+                    <li class="page-item"><a href="#" class="page-link">6</a></li>
+                    <li class="page-item"><a href="#" class="page-link">7</a></li>
+                    <li class="page-item next"><a href="#" class="page-link">下一页</a></li>
+                    <li class="page-item last"><a href="#" class="page-link">尾页</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 设置左侧菜单的代码 -->
+    <script>
+        $('#release_btn').click(function () {
+            window.parent.setMenu(1, 1);
+        })
+    </script>
+
+    <!-- 引入配置文件 -->
+    <script src="./tool/config.js"></script>
+    <script src="./tool/user.js"></script>
+    <script src="./tool/article.js"></script>
+    <!-- 引入模板引擎文件 -->
+    <script src="./js/template-web.js"></script>
+
+    <!-- 设置文章信息模板 -->
+    <script type="text/html" id="article">
+        {{each data v}}
+        <tr>
+            <td>{{v.title}}</td>
+            <td>{{v.author}}</td>
+            <td>{{v.type}}</td>
+            <td class="text-center">{{v.date}}</td>
+            <td class="text-center">{{v.state}}</td>
+            <td class="text-center">
+              <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
+              <a href="javascript:deleteTr( 1005 );" class="btn btn-danger btn-xs">删除</a>
+            </td>
+        </tr>
+        {{/each}}
+    </script>
+
+
+    <!-- 创建下来菜单模板 -->
+    <script type="text/html" id="category">
+
+        {{each data v}}
+
+            <option value="{{v.id}}">{{v.name}}</option>
+
+        {{/each}}
+
+    </script>
+    <!-- ********************************************** -->
+    <script>
+        // 通过模板引擎进行页面的结构创建
+        //1、页面加载中，请求数据生成结构
+        getArticle();
+
+
+
+        // 文章列表获取
+        $.ajax({
+            url: 'http://localhost:8000/admin/category_search',
+            success: function (res) {
+                var str = template('category', res);
+                $('#selCategory').html(str);
+            }
+        })
+
+
+        $('#btnSearch').on('click', function (e) {
+            // 阻止默认的提交
+            e.preventDefault();
+            getArticle();
+        });
+
+
+        // 封装函数进行数据请求和结构生成
+        function getArticle(){
+        $.ajax({
+            // type: 'post',
+            url: 'http://localhost:8000/admin/search',
+            // 筛选时需要传入type和state参数，代表文章分类和文章状态
+            data: {
+                type: $('#selCategory').val(),
+                state: $('#selStatus').val()
+            },
+            success: function (res) {
+
+                if (res.code === 200) {
+                    //生成结构
+                    var htmlStr = template('article', res);
+                    //将生成的标签给对应的标签
+                    $('tbody').html(htmlStr);
+                }
+            }
+        });
+    }
+
+
+
+    </script>
+</body>
+
+</html>

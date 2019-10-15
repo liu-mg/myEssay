@@ -28,7 +28,7 @@ var user = {
   // getInfo方法用来管理用户的简单信息获取接口的操作方式
   getInfo: function (options) {
     $.ajax({
-      // type : 'get',
+      type : 'get',
       url: USER_INFO,
       success: options.callback
     });
