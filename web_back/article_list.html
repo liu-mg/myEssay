@@ -123,6 +123,10 @@
     <script src="./tool/config.js"></script>
     <script src="./tool/user.js"></script>
     <script src="./tool/article.js"></script>
+
+    <!-- 引入JQuery分页插件文件 -->
+    <script src="./js/jquery.twbsPagination.js"></script>
+
     <!-- 引入模板引擎文件 -->
     <script src="./js/template-web.js"></script>
 
@@ -144,7 +148,7 @@
     </script>
 
 
-    <!-- 创建下来菜单模板 -->
+    <!-- 创建下拉菜单模板 -->
     <script type="text/html" id="category">
 
         {{each data v}}
@@ -156,11 +160,15 @@
     </script>
     <!-- ********************************************** -->
     <script>
+        //声明一些全局变量，用于分页
+        var myTotalPage;  //用来保存总页数
+        var myPage = 1; //用来保存当前页码
+
+
+
         // 通过模板引擎进行页面的结构创建
         //1、页面加载中，请求数据生成结构
         getArticle();
-
-
 
         // 文章列表获取
         $.ajax({
@@ -175,6 +183,9 @@
         $('#btnSearch').on('click', function (e) {
             // 阻止默认的提交
             e.preventDefault();
+
+            $('.first').click();
+
             getArticle();
         });
 
@@ -187,7 +198,9 @@
             // 筛选时需要传入type和state参数，代表文章分类和文章状态
             data: {
                 type: $('#selCategory').val(),
-                state: $('#selStatus').val()
+                state: $('#selStatus').val(),
+                //传入分页数据
+                page : myPage
             },
             success: function (res) {
 
@@ -196,6 +209,33 @@
                     var htmlStr = template('article', res);
                     //将生成的标签给对应的标签
                     $('tbody').html(htmlStr);
+
+
+                    //----- 分页功能 -----
+                    //通过变量保存总页数
+                    var totalPages = res.totalPage;
+                    //如果当前页和上一次页数相同，不用刷新
+                    if(totalPages === myTotalPage){
+                        return;
+                    }
+
+                    myTotalPage = totalPages;
+
+                    //先删除旧的，再创建新的
+                    $('.pagination').twbsPagination('destroy');
+                    $('.pagination').twbsPagination({
+                        totalPages : totalPages,
+                        visiblePages : 5,
+                        first : '首页',
+                        last : '尾页',
+                        next : '下一页',
+                        prev : '上一页',
+                        onPageClick : function(event,page){
+                            myPage = page;
+                            getArticle();
+                        }
+                    });
+
                 }
             }
         });
