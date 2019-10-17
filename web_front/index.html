@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>大事件-首页</title>
+    <title>大事件首页</title>
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/main.css">
@@ -215,12 +215,47 @@
             <span>|</span>
             <a href="#">招聘人才</a>
             <span>|</span>
-            <a href="#">友情链接</a>		
+            <a href="#">友情链接</a>
         </div>
-        <p>CopyRight © 2019 深圳大事件信息技术股份有限公司   All Rights Reserved</p>
-        <p>电话：0755-****888    粤ICP备*******8号</p>
+        <p>CopyRight © 2019 深圳大事件信息技术股份有限公司 All Rights Reserved</p>
+        <p>电话：0755-****888 粤ICP备*******8号</p>
     </div>
 
+
+    <!-- 引入jQuery和axios和模板引擎 -->
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <script src="./js/axios.min.js"></script>
+    <script src="../web_back/js/template-web.js"></script>
+
+    <!-- 设置模板 -->
+    <script type="text/html" id="article">
+    {{each data v i}}
+        <li {{if i === 0}}class = "first"{{/if}}>
+            <a href="javascript:;"><img src="{{v.cover}}" alt=""></a>
+            <p>{{v.title}}</p>
+        </li>
+    {{/each}}
+    </script>
+
+    <script>
+        // 1 发送请求
+        axios({
+            method: 'get',
+            url: 'http://localhost:8000/admin/search',
+            params: {
+                perpage: 5,
+            },
+        })
+            //进行成功处理
+            .then(function (res) {
+                console.log(res)
+                res = res.data
+
+                var htmlStr = template('article', res);
+                $('.focus_list').html(htmlStr);
+            })
+
+    </script>
 </body>
 
 </html>
