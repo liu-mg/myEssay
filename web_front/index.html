@@ -237,13 +237,20 @@
     {{/each}}
     </script>
 
+    <!-- 顶部分类导航模板 -->
+    <script type="text/html" id="category">
+        {{each data v}}
+            <li><a href="./list.html?id={{v.id}}">{{v.name}}</a></li>
+        {{/each}}
+    </script>
+
     <script>
         // 1 发送请求
         axios({
             method: 'get',
             url: 'http://localhost:8000/admin/search',
             params: {
-                perpage: 5,
+                perpage: 5,  //显示5个数据（图片）
             },
         })
             //进行成功处理
@@ -254,6 +261,24 @@
                 var htmlStr = template('article', res);
                 $('.focus_list').html(htmlStr);
             })
+    </script>
+
+
+
+    <script>
+    //请求服务端的分类数据，并展示在顶部分类导航位置
+    axios({
+        method : 'get',
+        url : 'http://localhost:8000/admin/category_search',
+    }).then(function(res){
+        res = res.data;
+        // console.log(res);
+        if(res.code === 200){
+            var htmlLi = template('category',res);
+            $('.left_menu').html(htmlLi);
+        }
+
+    })
 
     </script>
 </body>

@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="css/jquery.pagination.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
-	<script type="text/javascript" src="js/jquery.pagination.min.js"></script>
+    <script type="text/javascript" src="./js/jquery.pagination.min.js"></script>
 </head>
 
 <body>
@@ -63,7 +63,7 @@
                 <h3>科 技</h3>
             </div>
 
-            <div class="common_news_list">
+            <!-- <div class="common_news_list">
                 <a href="#" class="list_pic"><img src="images/pic09.jpg" alt=""></a>
                 <h4><a href="#">亚马逊金融试水中国？背后却是和华尔街的“金融战争” </a></h4>
                 <p>亚马逊抛弃了中国的买家们，却难以割舍庞大的卖家市场，有消息指出亚马逊中国将针对中国庞大的卖家群体推出一项贷款推荐计划。在连续对印度、墨西哥等新兴市场大力推广线上支付服务后，亚马逊金融试水进军中国市场的信号终于被放出。
@@ -133,15 +133,15 @@
                         )&nbsp;&nbsp;&nbsp;<i class="fa fa-commenting"></i>&nbsp;评论( 10 )</span>
                     <b>发布于 2018-08-30 12:18:58</b>
                 </div>
-            </div>
+            </div> -->
 
             <div id="pagination" class="page"></div>
             <script>
-                $(function() {
+                $(function () {
                     $("#pagination").pagination({
                         currentPage: 2,
-                        totalPage:8,
-                        callback: function(current) {
+                        totalPage: 8,
+                        callback: function (current) {
                             alert('ok!');
                         }
                     });
@@ -220,12 +220,61 @@
             <span>|</span>
             <a href="#">招聘人才</a>
             <span>|</span>
-            <a href="#">友情链接</a>		
+            <a href="#">友情链接</a>
         </div>
-        <p>CopyRight © 2019 深圳大事件信息技术股份有限公司   All Rights Reserved</p>
-        <p>电话：0755-****888    粤ICP备*******8号</p>
+        <p>CopyRight © 2019 深圳大事件信息技术股份有限公司 All Rights Reserved</p>
+        <p>电话：0755-****888 粤ICP备*******8号</p>
     </div>
 
+
+    <!-- 引入jQuery和axios和模板引擎 -->
+    <script src="./js/axios.min.js"></script>
+    <script src="./../web_back/js/template-web.js"></script>
+
+    <!-- 设置文章的模板 -->
+    <script type="text/html" id="article">
+        {{each data v}}
+            <div class="common_news_list">
+                <a href="./article.html?id={{v.id}}" class="list_pic"><img src="{{v.cover}}" alt=""></a>
+                <h4><a href="./article.html?id={{v.id}}">{{v.title}}</a></h4>
+                <p>{{v.content}}</p>
+                <div class="new_info">
+                    <span>标签：{{v.type}}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;阅读( {{v.read}}
+                        )&nbsp;&nbsp;&nbsp;<i class="fa fa-commenting"></i>&nbsp;评论( {{v.comment}} )</span>
+                    <b>发布于 {{v.date}}</b>
+                </div>
+            </div>
+        {{/each}}
+    </script>
+
+    <script>
+        //获取地址中的id
+        var id = location.search.split('=')[1];
+
+        if(!id){
+            location.href = './index.html';
+        }
+        axios({
+            method: 'get',
+            url: 'http://localhost:8000/admin/search',
+            params: {
+                state: '已发布',
+                type: id,
+            }
+        }).then(function (res) {
+            res = res.data;
+            console.log(res)
+            if(res.code === 200){
+                var htmlStr = template('article',res);
+                // 将结构生成到指定位置
+                $('.list_title').after(htmlStr);
+                // 将分类标题修改为对应的分类名称
+                $('.list_title h3').text(res.data[0].type);
+            }
+        })
+
+
+    </script>
 </body>
 
 </html>
